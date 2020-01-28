@@ -13,3 +13,5 @@ by de-noising using DWT Transforms, these were used on the CNN as images.
 The R-Peak detection we used was the Pan-Tompkins Algorithm.
 
 For the CNN we then segmented the beats. For the RNN we found the corresponding RR intervals.
+
+The CWT's were done in MATLAB however we weren't sure how to transfer MATLAB files over to GITHUB so we just pasted the code into the file in the MATLAB folder. Fortunately the code is very short so shouldn't be an issue.
