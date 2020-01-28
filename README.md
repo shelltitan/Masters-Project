@@ -1,6 +1,5 @@
 # Masters-Project
 Automatic Detection of Cardiac Arrhythmias
-For Henggui:
 
 The following list is in order of completion as well as brief descriptions.
 
