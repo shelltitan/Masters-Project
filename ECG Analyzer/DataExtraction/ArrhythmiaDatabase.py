@@ -13,8 +13,16 @@ files.remove("102-0")
 #for i,name in enumerate(files):
 #    print('For file ',name,' the index is ', i)
 
+#Directory locations
+db_dir = "D:/mit-bih-arrhythmia-database-1.0.0/{}" #Raw database directory
+#Directory for pickled database files
+out_dir_array = "D:/arrhythmia-database/RawDataArrays/{}_array.pkl"
+out_dir_label = "D:/arrhythmia-database/RawDataLabels/{}_labels.pkl"
+out_dir_label_location = "D:/arrhythmia-database/RawDataLabelLocations/{}_label_locations.pkl"
+out_dir_rhythms = "D:/arrhythmia-database/RawDataRhythms/{}_rhythms.pkl"
+
+
 # This function extracts the ecg signal and converts it into an array
-db_dir = "D:/mit-bih-arrhythmia-database-1.0.0/{}"
 def extract_data(filename):
     record = wfdb.rdrecord(db_dir.format(filename))
     d_signal = record.adc()
@@ -24,7 +32,6 @@ def extract_data(filename):
     #V_signal = (V_signal - V_signal.min())/(V_signal.max() - V_signal.min())
     return d_signal
 
-out_dir_array = "D:/arrhythmia-database/RawDataArrays/{}_array.pkl"
 for i,name in enumerate(files):
     signal = extract_data(name)
     with open(out_dir_array.format(i), 'wb') as f:
@@ -40,8 +47,6 @@ def extract_labels(filename):
     locations = ann.sample
     return labels_symbol, locations
 
-out_dir_label = "D:/arrhythmia-database/RawDataLabels/{}_labels.pkl"
-out_dir_label_location = "D:/arrhythmia-database/RawDataLabelLocations/{}_label_locations.pkl"
 for i,name in enumerate(files):
     labels_symbol,peaks = extract_labels(name)
     with open(out_dir_label.format(i), 'wb') as f:
@@ -50,7 +55,6 @@ for i,name in enumerate(files):
         pickle.dump(peaks, f)
 
 # This saves the rhythm annotations 
-out_dir_rhythms = "D:/arrhythmia-database/RawDataRhythms/{}_rhythms.pkl"
 for i,name in enumerate(files):
     ann = wfdb.rdann(db_dir.format(name),'atr',return_label_elements=['description'])
     rhythm = ann.aux_note
