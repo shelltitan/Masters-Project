@@ -17,7 +17,7 @@ dir_array = "D:/arrhythmia-database/RawDataArrays/{}_array.pkl"
 dir_segmented_data = 'D:/arrhythmia-database/SegmentedData/{}.pkl'
 dir_segments = 'D:/arrhythmia-database/SegmentedData/Segments/{}_segments.pkl'
 dir_segment_labels = 'D:/arrhythmia-database/SegmentedData/SegmentLabels/{}_labels.pkl'
-dir_segments_CWT = 'D:/arrhythmia-database/SegmentedData/SegmentsCWT/sample_{}.pkl'
+dir_segments_CWT = 'D:/arrhythmia-database/SegmentedData/SegmentsCWT/sample_{}'
 
 ##### This is the function that performs the CWT of the beat 
 
