@@ -1,11 +1,25 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 # -------- Create Test Set -------- #
 # This program adjusts the set aside test set to only select a subset of beats as well as rhythms
 # In order to do this, I have to loop through my test set checking labels and inputs to remove ones that
 # We are not classifying. These indices need to then be saved in order for Teddy to remove them from his set
 # As well as the CWT set.
 
+
+# In[ ]:
+
+
 import pickle
 import numpy as np
+
+
+# In[ ]:
+
 
 # Import the previously set aside test set for our patients
 
@@ -17,14 +31,26 @@ with open('Test Data/Rhythm Locations.pkl', 'rb') as f:
     rhythm_locations = pickle.load(f)
 with open('Test Data/Rhythm Labels.pkl', 'rb') as f:
     rhythm_labels = pickle.load(f)
-    
+
+
+# In[ ]:
+
+
 #print(len(beat_labels))
+
+
+# In[ ]:
+
 
 # Need to loop over all the rhythm locations and remove the half point 325000.0
 for i in range(len(rhythm_locations)):
     if(rhythm_locations[i][-1] == 325000.0):
         del rhythm_locations[i][-1]
-        
+
+
+# In[ ]:
+
+
 #i = 7
 #print(rhythm_labels[i])
 #print(rhythm_locations[i])
@@ -40,6 +66,10 @@ del rhythm_labels[6][0]
 del rhythm_locations[7][0]
 rhythm_locations[4][0] = 322000
 
+
+# In[ ]:
+
+
 # Swap patients around to get in the order 4,14,24,28....
 # swap the 14 -> 4
 rhythm_locations[2], rhythm_locations[0] = rhythm_locations[0], rhythm_locations[2]
@@ -51,6 +81,10 @@ rhythm_locations[2], rhythm_locations[1] = rhythm_locations[1], rhythm_locations
 rhythm_labels[2], rhythm_labels[1] = rhythm_labels[1], rhythm_labels[2]
 beat_locations[2], beat_locations[1] = beat_locations[1], beat_locations[2]
 beat_labels[2], beat_labels[1] = beat_labels[1], beat_labels[2]
+
+
+# In[ ]:
+
 
 # Now pre-process the data completely
 # Delete last beat as this might have issues with ECG disconnection, not a complete beat etc
@@ -243,7 +277,11 @@ inputs = []
 for i in integer_samples:
     for j in i:
         inputs.append(j)
-    
+
+
+# In[ ]:
+
+
 window_beat_labels = []
 window_beat_locations = []
 
@@ -258,7 +296,11 @@ for j in range(8):
     #print(len(new_beat_locations))
     window_beat_labels += new_beat_labels
     window_beat_locations += new_beat_locations
-    
+
+
+# In[ ]:
+
+
 window_beat_locations = np.array(window_beat_locations)
 #print(window_beat_locations.shape)
 #print(inputs.shape)
@@ -268,7 +310,15 @@ for i in window_beat_locations:
     if(len(i) < 10):
         print(i)
 
+
+# In[ ]:
+
+
 indices_removed_1 = []
+
+
+# In[ ]:
+
 
 # Now we need to remove any samples from the test data that has a peak we cannot use
 # Peaks we can use: N L R A V ! j / f x
@@ -299,6 +349,10 @@ for c,i in enumerate(inputs):
                 index+=1
                 indices_removed_1.append(index)
 
+
+# In[ ]:
+
+
 # Now loop over and take out all instances of beats we cannot have and save the indices
 index = -1
 total_y = []
@@ -321,6 +375,10 @@ for c,i in enumerate(new_inputs):
             index += 1
             indices_removed_2.append(index)
 
+
+# In[ ]:
+
+
 # Now loop over and remove beats that are in rhythms we cannot predict
 
 no_use = [0,2,5,7,9,12,13,14]
@@ -340,7 +398,11 @@ for c,i in enumerate(total_y):
     else:
         indices = list(np.arange((c*10), ((c*10)+10)))
         windows_removed += (indices)
-        
+
+
+# In[ ]:
+
+
 # Save these indices and send them over to Teddy who can remove them from his CNN test set
 
 with open('first_indices_removed.pkl', 'wb') as f:
@@ -349,10 +411,18 @@ with open('second_indices_remove.pkl', 'wb') as f:
     pickle.dump(indices_removed_2,f)
 with open('third_indices_remove.pkl', 'wb') as f:
     pickle.dump(windows_removed,f)
-    
+
+
+# In[ ]:
+
+
 #print(final_x[0])
 #print(final_y[0])
 #print(final_beat_locations[0])
+
+
+# In[ ]:
+
 
 # Need to change my x column now to only include new numbers corresponding to the beats the CNN
 # Can predict as it is now fitting a 10 vector of one hot encoded so:
@@ -368,13 +438,25 @@ final_x[final_x == 11] = 6
 final_x[final_x == 14] = 8
 final_x[final_x == 15] = 9
 
+
+# In[ ]:
+
+
 #print(final_x[:2])
+
+
+# In[ ]:
+
 
 final_beat_locations = np.array(final_beat_locations)
 final_y = np.array(final_y)
 #print(final_x.shape)
 #print(final_y.shape)
 #print(final_beat_locations.shape)
+
+
+# In[ ]:
+
 
 # Save this new modified test set ready to use
 with open('RNN Models/RNN_Test_x.pkl', 'wb') as f:
@@ -383,7 +465,11 @@ with open('RNN Models/RNN_Test_y.pkl', 'wb') as f:
     pickle.dump(final_y,f)
 with open('RNN Models/RNN_Test_Beat_Locations.pkl', 'wb') as f:
     pickle.dump(final_beat_locations,f)
-    
+
+
+# In[ ]:
+
+
 # This is just a check for me and my partner to ensure we definitely have the same set and there is no errors
 # Gives us the proportions of the beats in the sample
 
@@ -415,9 +501,22 @@ for i in final_x:
             continue
         else:
             options[number] += 1
-            
+
+
+# In[ ]:
+
+
 #print(options)
+
+
+# In[ ]:
+
+
 #print(beat_locations[0])
+
+
+# In[ ]:
+
 
 # This is a check to see the proportions of the amount of rhythms within the sample set
 
@@ -476,8 +575,16 @@ def proportions(labels):
                 
     return options
 
+
+# In[ ]:
+
+
 new = proportions(final_y)
 print(new)
+
+
+# In[ ]:
+
 
 # Take out multiclass and see how proportions changes, which rhythms are removed
 multiclass_y = []
@@ -488,3 +595,4 @@ for c,i in enumerate(final_y):
         
 newer = proportions(multiclass_y)
 print(newer)
+

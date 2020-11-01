@@ -33,9 +33,9 @@ rhythm_labels = ['AB','AFIB','AFL','B','BII','IVR','N',
                  'NOD','P','PREX','SBR', 'SVTA','T','VFL','VT']
 
 # This bit of code gets the locations and labels for the beats.
-with open('D:/arrhythmia-database/RawDataLabels/7_labels.pkl','rb') as f:
+with open(dir_label.format(str(7),'rb') as f:
     labels = pickle.load(f)
-with open('D:/arrhythmia-database/RawDataLabelLocations/7_label_locations.pkl','rb') as f:
+with open(dir_label_locations.format(str(7),'rb') as f:
     label_location = pickle.load(f)
 
 beat_type = [i for i in labels if i in beat_labels]
@@ -43,9 +43,9 @@ beat_index = [i for i,c in enumerate(labels) if c in beat_labels]
 peaks = [label_location[i] for i in beat_index]
 
 # This bit of code gets the locations and labels for the rhythms.
-with open('D:/arrhythmia-database/RawDataRhythms/7_rhythms.pkl','rb') as f:
+with open(dir_label_rhythms.format(str(7)),'rb') as f:
     rhythms = pickle.load(f)
-with open('D:/arrhythmia-database/RawDataLabelLocations/7_label_locations.pkl','rb') as f:
+with open(dir_label_locations.format(str(7)),'rb') as f:
     label_location = pickle.load(f)
     
 
@@ -87,6 +87,6 @@ for i,name in enumerate(files):
     with open(fin_dir_rhythm_locations.format(i), 'wb') as f:
         pickle.dump(rhythm_locations, f)
         
-with open(fin_dir_rhythm_locations.format(0),'rb') as f:
+with open(fin_dir_rhythm_locations.format('2'),'rb') as f:
         rh = pickle.load(f)
 print(rh)

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[4]:
+
+
 # -------- Code Outline -------- #
 # Code splits the de-noised data into segments
 # Each segment will contain only one heart beat
@@ -11,6 +17,8 @@ import matplotlib.pyplot as plt
 import pickle
 import os
 
+# In[41]:
+
 db_dir = "D:/mit-bih-arrhythmia-database-1.0.0/"
 
 files = [os.path.splitext(filename)[0] for filename in os.listdir(db_dir) if filename.endswith('.atr')]
@@ -22,7 +30,7 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 dir_denoised_data = 'D:/arrhythmia-database/DenoisedData/{}_de-noised.pkl'
 dir_segments = 'D:/arrhythmia-database/SegmentedData/Segments/{}_segments.pkl'
 dir_segment_labels = 'D:/arrhythmia-database/SegmentedData/SegmentLabels/{}_labels.pkl'
-
+#%%
 for i,name in enumerate(files):
     # Load in the peaks
     with open(fin_dir_peaks.format(i), 'rb') as f:
@@ -31,7 +39,7 @@ for i,name in enumerate(files):
     # Load in the de-noised original data
     with open(dir_denoised_data.format(i), 'rb') as f:
         Data = pickle.load(f)
-        
+       
     # -------- Segmentation -------- #
     # Split the beats up into segments based on the peak array
 
@@ -69,36 +77,69 @@ for i,name in enumerate(files):
     
     with open(dir_segment_labels.format(i), 'wb') as f:
         pickle.dump(Labels, f)
-    
+  
+# In[42]:
+
+
 with open(dir_denoised_data.format(1), 'rb') as f:
         Data = pickle.load(f)
-    
-plt.figure(1)
+        
 plt.plot(Data[600:1200])
+
+
+# In[43]:
+
 
 with open(dir_segments.format(1), 'rb') as f:
         seg = pickle.load(f)
         plt.plot(seg[2])
-        
+
+
+# In[59]:
+
+
 print(len(segments))
 print(len(Labels))
 
-plt.figure(2)
+
+# In[18]:
+
+
 plt.plot(Data[300:750])
 
-plt.figure(3)
+
+# In[20]:
+
+
 plt.plot(segments[2])
 
-#Che
+
+# In[64]:
+
+
 with open(dir_segments.format(0), 'rb') as f:
         segments = pickle.load(f)
 segments = np.array(segments)
 print(segments[0].shape[-1])
 
+
+# In[61]:
+
+
 # Because all the segments are different lengths, when indexing it you have to think about it as a list of arrays.
 # So you use list indexing style to pick which ever segment, then use the numpy indexing style to get the lead.
-plt.figure(4)
 plt.plot(segments[0][:,0])
+
+
+# In[1]:
+
 
 with open(dir_segments.format(0), 'rb') as f:
         segments = pickle.load(f)
+
+
+# In[ ]:
+
+
+
+

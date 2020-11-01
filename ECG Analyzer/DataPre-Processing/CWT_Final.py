@@ -1,5 +1,15 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 # This performs a CWT of each beat. As this is going to be a CWT of more widths, there needs to be extra padding
 # on the sides of each CWT that is then cut off to get rid of boundary effects from the CWT
+
+
+# In[1]:
+
 
 from scipy import signal
 import pickle
@@ -12,13 +22,15 @@ from skimage.transform import resize
 import math
 from pywt._doc_utils import boundary_mode_subplot
 
+
+# In[2]:
 #Directory  variables
 dir_array = "D:/arrhythmia-database/RawDataArrays/{}_array.pkl"
 dir_segmented_data = 'D:/arrhythmia-database/SegmentedData/{}.pkl'
 dir_segments = 'D:/arrhythmia-database/SegmentedData/Segments/{}_segments.pkl'
 dir_segment_labels = 'D:/arrhythmia-database/SegmentedData/SegmentLabels/{}_labels.pkl'
 dir_segments_CWT = 'D:/arrhythmia-database/SegmentedData/SegmentsCWT/sample_{}'
-
+#%%
 ##### This is the function that performs the CWT of the beat 
 
 def CWT(beat ,widths=np.arange(1,128)):
@@ -68,16 +80,25 @@ def CWT(beat ,widths=np.arange(1,128)):
         
     return sample
 
-with open(dir_array.format(0), 'rb') as f:
+
+# In[34]:
+
+
+with open(dir_array.format(7), 'rb') as f:
         ar = pickle.load(f)
-    
-plt.figure(1)
 plt.plot(ar[:1000,0])
+
+
+# In[3]:
+
 
 with open(dir_segments.format(0), 'rb') as f:
         data = pickle.load(f)
 
-plt.figure(2)
+
+# In[4]:
+
+
 plt.plot(data[2][:,0])
 plt.xlabel('Samples')
 plt.ylabel('Millivolt (mV)')
@@ -85,7 +106,10 @@ plt.xlabel('Samples')
 plt.title('ECG of a Normal Beat')
 #plt.savefig('ECG of normal beat',dpi=200)
 
-plt.figure(3)
+
+# In[8]:
+
+
 CWTed = CWT(data[2])
 plt.imshow(CWTed[:,:,0])
 #plt.colorbar()
@@ -94,7 +118,15 @@ plt.imshow(CWTed[:,:,0])
 with open('Test Aug.pkl','wb') as f:
     pickle.dump(CWTed,f)
 
+
+# In[20]:
+
+
 np.save('test',CWTed ,allow_pickle = True)
+
+
+# In[29]:
+
 
 # loop to find how many samples there will be 
 num_samps = 0
@@ -106,6 +138,10 @@ for i in range(48):
     num_samps += length
 print(num_samps)
 print('Size of all the data = ', num_samps * 129 , 'kb')
+
+
+# In[4]:
+
 
 # This is a loop to perform a CWT of every sample
 num_samps_total = 0
@@ -132,14 +168,18 @@ for i in range(48):
     patient_samples.append(num_samps_total)
     # So I know where to start it again if it stops I will print this: 
     print('Number of samples for patient ',i,' is: ',num_samps_total)
-with open(dir_segmented_data.format(sample_labels), 'wb') as f:
+with open('Segmented Data/sample_labels.pkl', 'wb') as f:
         pickle.dump(sample_labels, f)
         
 with open(dir_segmented_data.format(patient_samples), 'wb') as f:
         pickle.dump(patient_samples, f)
-        
+
+
+# In[1]:
+
+
 # I need to load in the labels and convert the labels to numbers rather than strings
-with open(dir_segmented_data.format(sample_labels), 'rb') as f:
+with open('Segmented Data/sample_labels.pkl', 'rb') as f:
         Labels = pickle.load(f)
         
 #print(Labels)
@@ -164,29 +204,58 @@ label_cat = [0 if b=='N'
             else 16 if b=='Q'
             else 17 for b in Labels]
 
-with open(dir_segmented_data.format(sample_labels_cat), 'wb') as f:
+with open('Segmented Data/sample_labels_cat.pkl', 'wb') as f:
         pickle.dump(label_cat, f)
         
 print(label_cat[:10])
+
+
+# In[22]:
+
 
 # Now that the labels are numbers, I can use categorical encoding to make each label a vector of length
 # 18 (18 types of labels) with a 1 in the label index.
 import keras
 from keras.utils.np_utils import to_categorical
 one_hot_labels = to_categorical(label_cat)
-with open(dir_segmented_data.format(sample_labels_cat), 'wb') as f:
+with open('Segmented Data/sample_labels_cat.pkl', 'wb') as f:
         pickle.dump(label_cat, f)
-        
+
+
+# In[23]:
+
+
 one_hot_labels = to_categorical(label_cat)
 
+
+# In[30]:
+
+
 print(len(one_hot_labels))
-with open(dir_segmented_data.format(Sample_labels_OHE), 'wb') as f:
+with open('Segmented Data/Sample_labels_OHE.pkl', 'wb') as f:
         pickle.dump(one_hot_labels, f)
-        
+
+
+# In[17]:
+
+
 # I now need to make a list of all the sample ID's to be read in
 sample_IDs = []
 for i in range(len(Labels)):
     sample_IDs.append('Sample_{}'.format(i))
     
-with open(dir_segmented_data.format(Sample_IDs), 'wb') as f:
+with open('Segmented Data/Sample_IDs.pkl', 'wb') as f:
         pickle.dump(Sample_IDs, f)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+

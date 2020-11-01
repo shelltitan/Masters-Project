@@ -1,6 +1,16 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
+
 # This code trains the entire R Peak Detection algorithm as well as
 # Test it on a hold out set of three patients that will contain a mix of ECG
 # Signals. This will allow us to see how well it will perform in practise.
+
+
+# In[ ]:
+
 
 import pickle
 import numpy as np
@@ -15,10 +25,12 @@ from sklearn.model_selection import train_test_split
 from scipy.signal import find_peaks
 from scipy import interpolate
 
+#%%
 #Directory Variables
 dir_denoised_data = 'D:/arrhythmia-database/DenoisedData/{}_de-noised.pkl'
 fin_dir_peaks = 'D:/arrhythmia-database/RawDataFinal/Peaks/{}_peaks.pkl'
 
+# In[ ]:
 
 
 # Use this function to normalise the ECG signals
@@ -29,6 +41,10 @@ def normalise(x):
     std = np.std(x)
     x /= std
     return (x)
+
+
+# In[ ]:
+
 
 # Test set is full of patients: 100, 105, 116, 215, 232
 # All the other patients can be put into the training set
@@ -122,31 +138,84 @@ for o,i in enumerate(train):
     # Now append these to the total
     final_x[o] = patient_x
     final_y[o] = patient_y
-    
+
+
+# In[ ]:
+
+
 #print(len(final_x))
 #print(len(final_x[0]))
 
+
+# In[ ]:
+
+
 final_x = np.array(final_x)
 
+
+# In[ ]:
+
+
 #print(final_x.shape)
+
+
+# In[ ]:
+
+
 #print(final_x[1][0])
+
+
+# In[ ]:
+
 
 # Reshape so that we just have all the points with 6 features
 
 total = (final_x.shape[0] * final_x.shape[1] * final_x.shape[2])
 test_x = np.reshape(final_x, (total, final_x.shape[-1]))
 
-#test_x.shape
-#test_x[650000]
 
+# In[ ]:
+
+
+#test_x.shape
+
+
+# In[ ]:
+
+
+#test_x[650000]
 # Re-shaping has worked so now do same for labels
+
+
+# In[ ]:
+
+
 final_y = np.array(final_y)
+
+
+# In[ ]:
+
+
 test_y = np.reshape(final_y, (total,))
 
+
+# In[ ]:
+
+
 #test_y.shape
+
+
+# In[ ]:
+
+
 #test_y[:10]
 
+
+# In[ ]:
+
+
 # Function to check what proportion split of the data is R regions compared to normal signals
+
 def proportions(y):
     test = list(y)
     points = test.count(1)
@@ -155,8 +224,13 @@ def proportions(y):
     
 proportions(test_y)
 
+
+# In[ ]:
+
+
 # Create a dense model with a relu activation function that performs binary classification indicating if a point
 # Belongs to the R region or not
+
 initializer = "glorot_uniform"
 model = Sequential()
 model.add(Dense(256, activation ='relu', input_shape = (6,)))
@@ -165,21 +239,41 @@ opt = keras.optimizers.Adam(lr=0.001)
 model.compile(optimizer=opt, loss = 'binary_crossentropy', metrics=["binary_accuracy", "mae"])
 model.summary()
 
+
+# In[ ]:
+
+
 # Split set into train and validation randomly -> large enough dataset that simple splitting will work fine
 x_train, x_val, y_train, y_val = train_test_split(test_x, test_y, test_size=0.25, shuffle = True)
 # Check proportions to ensure they are similar
 proportions(y_train)
 proportions(y_val)
 
+
+# In[ ]:
+
+
 #x_train.shape
+
+
+# In[ ]:
+
 
 # Fit the model for 50 epochs using an extremely large batch size due to large input data size
 history = model.fit(x_train, y_train, verbose=True, batch_size = 50000, validation_data = (x_val, y_val), epochs = 50)
+
+
+# In[ ]:
+
 
 # Get a confusion matrix
 preds = model.predict(x_val, verbose = True)
 
 preds = preds.reshape((preds.shape[0],))
+
+
+# In[ ]:
+
 
 from sklearn.metrics import confusion_matrix
 
@@ -189,18 +283,34 @@ preds[preds <= 0.5] = 0
 
 print(confusion_matrix(y_val,preds))
 
+
+# In[ ]:
+
+
 #plt.plot(final_x[0][0][:6])
+
+
+# In[ ]:
+
 
 # Save the model training history and confusion matrix for future analysis
 
 confusion = confusion_matrix(y_val,preds)
 with open('Dense R Peak Results/Non-Weighted/Confusion.pkl'.format(str(i)), 'wb') as f:
     pickle.dump(confusion,f)
-    
+
+
+# In[ ]:
+
+
 with open('Dense R Peak Results/Non-Weighted/History.pkl'.format(str(i)), 'wb') as f:
     pickle.dump(history,f)
     
 #model.save("RNN R Peak Detection Model_reduce_set.h5")
+
+
+# In[ ]:
+
 
 # Repeat the process for a test patient to see what the accuracy is looking like
 
@@ -282,16 +392,40 @@ for o,i in enumerate(test):
     # Now append these to the total
     test_x[o] = patient_x
     test_y[o] = patient_y
-    
+
+
+# In[ ]:
+
+
 test_x = np.array(test_x).reshape(650000,6)
+
+
+# In[ ]:
+
 
 test_y = np.array(test_y).reshape(650000,)
 
+
+# In[ ]:
+
+
 pred = model.predict(test_x, verbose = True)
+
+
+# In[ ]:
+
 
 plt.plot(pred[:5000])
 
+
+# In[ ]:
+
+
 pred = pred.reshape((pred.shape[0],))
+
+
+# In[ ]:
+
 
 def accuracy_metric(new_prob_peaks, peaks):
 
@@ -319,6 +453,10 @@ def accuracy_metric(new_prob_peaks, peaks):
     wrong = (missing + round((1-accuracy) * len(new_prob_peaks)))
     return wrong
 
+
+# In[ ]:
+
+
 prob_peaks, _ = find_peaks(pred, height = 0.05, distance = 10)
 new_prob_peaks = prob_peaks[lead_1[prob_peaks] > 0]
 accuracy = accuracy_metric(new_prob_peaks, peaks)
@@ -332,3 +470,4 @@ accuracy = accuracy_metric(new_prob_peaks, peaks)
 plt.plot(lead_1[:11000])
 temp = new_prob_peaks[:41]
 plt.plot(temp, lead_1[temp], "x")
+

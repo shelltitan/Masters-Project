@@ -17,7 +17,8 @@ from keras.preprocessing.image import ImageDataGenerator
 
 
 # In[30]:
-
+#Directory locations
+dir_segments_CWT = 'D:/arrhythmia-database/SegmentedData/SegmentsCWT/sample_{}.npy'
 
 class DataGenerator_aug(keras.utils.Sequence):
     """Generates data for keras"""
@@ -96,7 +97,7 @@ class DataGenerator_aug(keras.utils.Sequence):
                 # Load a 5 beat sample from the folder
                 # First find the right filename by opening the pickle of samples and selecting the index
                 # Then opening this from the whole data set
-                filename = ("Segmented Data/Segments CWT/sample_{}.npy".format(Beat_ID))
+                filename = (dir_segments_CWT.format(Beat_ID))
                 # Now load in a 5 beat sample and set as first element in input array
 
                 temp1 = np.load(filename, allow_pickle = True)
@@ -105,7 +106,7 @@ class DataGenerator_aug(keras.utils.Sequence):
                 ran_aug = datagen.random_transform(new,seed=None)
                 X[j] = ran_aug[:,:,:2]
             else:
-                filename = ("Segmented Data/Segments CWT/sample_{}.npy".format(Beat_ID))
+                filename = (dir_segments_CWT.format(Beat_ID))
                 X[j] = np.load(filename, allow_pickle = True)
             
             
