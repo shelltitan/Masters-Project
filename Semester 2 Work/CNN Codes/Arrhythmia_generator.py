@@ -15,7 +15,8 @@ import pickle
 
 
 # In[30]:
-
+#Directory locations
+dir_segments_CWT = 'D:/arrhythmia-database/SegmentedData/SegmentsCWT/sample_{}.npy'
 
 class DataGenerator(keras.utils.Sequence):
     """Generates data for keras"""
@@ -86,7 +87,7 @@ class DataGenerator(keras.utils.Sequence):
             # Load a 5 beat sample from the folder
             # First find the right filename by opening the pickle of samples and selecting the index
             # Then opening this from the whole data set
-            filename = ("Segmented Data/Segments CWT/sample_{}.npy".format(Beat_ID))
+            filename = (dir_segments_CWT.format(Beat_ID))
             # Now load in a 5 beat sample and set as first element in input array
             X[j] = np.load(filename, allow_pickle = True)
             
