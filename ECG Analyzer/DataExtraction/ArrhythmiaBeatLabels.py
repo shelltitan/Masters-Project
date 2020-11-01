@@ -10,6 +10,15 @@ import matplotlib.pyplot as plt
 import os
 
 db_dir = "D:/mit-bih-arrhythmia-database-1.0.0/" #Data base directory
+# Directory locations
+dir_label = "D:/arrhythmia-database/RawDataLabels/{}_labels.pkl"
+dir_label_locations = "D:/arrhythmia-database/RawDataLabelLocations/{}_label_locations.pkl"
+dir_label_rhythms = 'D:/arrhythmia-database/RawDataRhythms/{}_rhythms.pkl'
+#Final directory
+fin_dir_peaks = 'D:/arrhythmia-database/RawDataFinal/Peaks/{}_peaks.pkl'
+fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_labels.pkl'
+fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
+fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 
 # Make list of all filenames used 
 files = [os.path.splitext(filename)[0] for filename in os.listdir(db_dir) if filename.endswith('.atr')]
@@ -43,16 +52,6 @@ with open('D:/arrhythmia-database/RawDataLabelLocations/7_label_locations.pkl','
 rhythm_type = [i for i in rhythms if i in rhythm_labels]
 index = [i for i,c in enumerate(rhythms) if c in rhythm_labels]
 rhythm_locations = [label_location[i] for i in index]
-
-# Directory locations
-dir_label = "D:/arrhythmia-database/RawDataLabels/{}_labels.pkl"
-dir_label_locations = "D:/arrhythmia-database/RawDataLabelLocations/{}_label_locations.pkl"
-dir_label_rhythms = 'D:/arrhythmia-database/RawDataRhythms/{}_rhythms.pkl'
-#Final directory
-fin_dir_peaks = 'D:/arrhythmia-database/RawDataFinal/Peaks/{}_peaks.pkl'
-fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_labels.pkl'
-fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
-fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 
 
 # This is a loop that does the previous code for every file and saves the arrays
