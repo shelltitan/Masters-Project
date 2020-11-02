@@ -33,9 +33,9 @@ rhythm_labels = ['AB','AFIB','AFL','B','BII','IVR','N',
                  'NOD','P','PREX','SBR', 'SVTA','T','VFL','VT']
 
 # This bit of code gets the locations and labels for the beats.
-with open(dir_label.format(str(7),'rb') as f:
+with open(dir_label.format(str(7)),'rb') as f:
     labels = pickle.load(f)
-with open(dir_label_locations.format(str(7),'rb') as f:
+with open(dir_label_locations.format(str(7)),'rb') as f:
     label_location = pickle.load(f)
 
 beat_type = [i for i in labels if i in beat_labels]
