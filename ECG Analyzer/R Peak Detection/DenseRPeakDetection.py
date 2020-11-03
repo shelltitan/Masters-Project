@@ -49,7 +49,7 @@ def normalise(x):
 # Test set is full of patients: 100, 105, 116, 215, 232
 # All the other patients can be put into the training set
 
-train = [101,103,105,107,109,112,114,118,121,123,200,202,205,208,210,213,215,219,221,223,230]
+train = [1,3,5,7,9,11,13,17,19,21,23,25,27,29,31,33,35,37,39,41,43]
 
 final_x = np.zeros((len(train), 65,10000,6), dtype=np.float32)
 final_y = np.zeros((len(train), 65, 10000), dtype=np.int32)
