@@ -218,7 +218,7 @@ print(label_cat[:10])
 import keras
 from keras.utils.np_utils import to_categorical
 one_hot_labels = to_categorical(label_cat)
-with open('Segmented Data/sample_labels_cat.pkl', 'wb') as f:
+with open(dir_segmented_data.format('sample_labels_cat'), 'wb') as f:
         pickle.dump(label_cat, f)
 
 
@@ -232,7 +232,7 @@ one_hot_labels = to_categorical(label_cat)
 
 
 print(len(one_hot_labels))
-with open('Segmented Data/Sample_labels_OHE.pkl', 'wb') as f:
+with open(dir_segmented_data.format('Sample_labels_OHE'), 'wb') as f:
         pickle.dump(one_hot_labels, f)
 
 
@@ -240,11 +240,11 @@ with open('Segmented Data/Sample_labels_OHE.pkl', 'wb') as f:
 
 
 # I now need to make a list of all the sample ID's to be read in
-sample_IDs = []
+Sample_IDs = []
 for i in range(len(Labels)):
-    sample_IDs.append('Sample_{}'.format(i))
+    Sample_IDs.append('Sample_{}'.format(i))
     
-with open('Segmented Data/Sample_IDs.pkl', 'wb') as f:
+with open(dir_segmented_data.format('Sample_IDs'), 'wb') as f:
         pickle.dump(Sample_IDs, f)
 
 
