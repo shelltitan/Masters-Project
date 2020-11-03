@@ -133,9 +133,8 @@ num_samps = 0
 for i in range(48):
     with open(dir_segments.format(i), 'rb') as f:
         segments = pickle.load(f)
-        
-    length = len(segments)
-    num_samps += length
+    
+    num_samps += len(segments)
 print(num_samps)
 print('Size of all the data = ', num_samps * 129 , 'kb')
 
@@ -147,6 +146,7 @@ print('Size of all the data = ', num_samps * 129 , 'kb')
 num_samps_total = 0
 sample_labels = []
 patient_samples = []
+
 for i in range(48):
     print(i)
     
@@ -155,14 +155,17 @@ for i in range(48):
     with open(dir_segment_labels.format(i), 'rb') as f:
         Labels = pickle.load(f)
     
-    
+    print(len(segments))
     for j in range(len(segments)):
         # Append the sample label to sample_labels
         sample_labels.append(Labels[j])
         CWTed = CWT(segments[j])
         np.save(dir_segments_CWT.format('num_samps_total'),CWTed ,allow_pickle = True)
         num_samps_total += 1
-        
+        if(num_samps_total % 100 == 0):
+            print("Status: ")
+            print(num_samps_total/num_samps)
+ 
     # Need to know which samples correspond to which patient for later on when we're combining the CNN
     # with the RNN     
     patient_samples.append(num_samps_total)
