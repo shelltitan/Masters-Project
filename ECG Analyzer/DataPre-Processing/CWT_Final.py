@@ -160,7 +160,7 @@ for i in range(48):
         # Append the sample label to sample_labels
         sample_labels.append(Labels[j])
         CWTed = CWT(segments[j])
-        np.save(dir_segments_CWT.format(num_samps_total),CWTed ,allow_pickle = True)
+        np.save(dir_segments_CWT.format('num_samps_total'),CWTed ,allow_pickle = True)
         num_samps_total += 1
         
     # Need to know which samples correspond to which patient for later on when we're combining the CNN
@@ -168,10 +168,10 @@ for i in range(48):
     patient_samples.append(num_samps_total)
     # So I know where to start it again if it stops I will print this: 
     print('Number of samples for patient ',i,' is: ',num_samps_total)
-with open('Segmented Data/sample_labels.pkl', 'wb') as f:
+with open(dir_segmented_data.format('sample_labels'), 'wb') as f:
         pickle.dump(sample_labels, f)
         
-with open(dir_segmented_data.format(patient_samples), 'wb') as f:
+with open(dir_segmented_data.format('patient_samples'), 'wb') as f:
         pickle.dump(patient_samples, f)
 
 
@@ -179,7 +179,7 @@ with open(dir_segmented_data.format(patient_samples), 'wb') as f:
 
 
 # I need to load in the labels and convert the labels to numbers rather than strings
-with open('Segmented Data/sample_labels.pkl', 'rb') as f:
+with open(dir_segmented_data.format('sample_labels'), 'rb') as f:
         Labels = pickle.load(f)
         
 #print(Labels)
@@ -204,7 +204,7 @@ label_cat = [0 if b=='N'
             else 16 if b=='Q'
             else 17 for b in Labels]
 
-with open('Segmented Data/sample_labels_cat.pkl', 'wb') as f:
+with open(dir_segmented_data.format('sample_labels_cat'), 'wb') as f:
         pickle.dump(label_cat, f)
         
 print(label_cat[:10])
