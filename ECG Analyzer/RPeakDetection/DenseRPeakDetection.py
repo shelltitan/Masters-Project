@@ -28,7 +28,9 @@ from scipy import interpolate
 #%%
 #Directory Variables
 dir_denoised_data = 'D:/arrhythmia-database/DenoisedData/{}_de-noised.pkl'
+rpeak_dir = 'D:/arrhythmia-database/RPeakDetector'
 fin_dir_peaks = 'D:/arrhythmia-database/RawDataFinal/Peaks/{}_peaks.pkl'
+
 
 # In[ ]:
 
@@ -296,14 +298,14 @@ print(confusion_matrix(y_val,preds))
 # Save the model training history and confusion matrix for future analysis
 
 confusion = confusion_matrix(y_val,preds)
-with open('Dense R Peak Results/Non-Weighted/Confusion.pkl'.format(str(i)), 'wb') as f:
+with open(rpeak_dir + 'Non-Weighted/Confusion.pkl'.format(str(i)), 'wb') as f:
     pickle.dump(confusion,f)
 
 
 # In[ ]:
 
 
-with open('Dense R Peak Results/Non-Weighted/History.pkl'.format(str(i)), 'wb') as f:
+with open(rpeak_dir + 'Non-Weighted/History.pkl'.format(str(i)), 'wb') as f:
     pickle.dump(history,f)
     
 #model.save("RNN R Peak Detection Model_reduce_set.h5")
