@@ -1,2 +1,4 @@
 
 ECG Analyzer/DataPre-Processing/Test Aug.pkl
+*.h5
+*.pyc

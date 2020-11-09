@@ -24,11 +24,10 @@ from sklearn.model_selection import train_test_split
 # Potentially for analysing probability output distribution
 from scipy.signal import find_peaks
 from scipy import interpolate
-
 #%%
 #Directory Variables
 dir_denoised_data = 'D:/arrhythmia-database/DenoisedData/{}_de-noised.pkl'
-rpeak_dir = 'D:/arrhythmia-database/RPeakDetector'
+rpeak_dir = 'D:/arrhythmia-database/RPeakDetector/'
 fin_dir_peaks = 'D:/arrhythmia-database/RawDataFinal/Peaks/{}_peaks.pkl'
 
 
@@ -298,17 +297,17 @@ print(confusion_matrix(y_val,preds))
 # Save the model training history and confusion matrix for future analysis
 
 confusion = confusion_matrix(y_val,preds)
-with open(rpeak_dir + 'Non-Weighted/Confusion.pkl'.format(str(i)), 'wb') as f:
+with open(rpeak_dir + 'Non-Weighted/Confusion.pkl', 'wb') as f:
     pickle.dump(confusion,f)
 
 
 # In[ ]:
 
 
-with open(rpeak_dir + 'Non-Weighted/History.pkl'.format(str(i)), 'wb') as f:
+with open(rpeak_dir + 'Non-Weighted/History.pkl', 'wb') as f:
     pickle.dump(history,f)
     
-#model.save("RNN R Peak Detection Model_reduce_set.h5")
+# model.save("RNN R Peak Detection Model_reduce_set.h5")
 
 
 # In[ ]:
@@ -319,7 +318,7 @@ with open(rpeak_dir + 'Non-Weighted/History.pkl'.format(str(i)), 'wb') as f:
 # Test set is full of patients: 100, 105, 116, 215, 232
 # All the other patients can be put into the training set
 
-test = [100]
+test = [0]
 
 test_x = np.zeros((len(test), 65,10000,6), dtype=np.float32)
 test_y = np.zeros((len(test), 65, 10000), dtype=np.int32)

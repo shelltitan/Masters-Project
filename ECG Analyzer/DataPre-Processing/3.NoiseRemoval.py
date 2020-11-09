@@ -77,7 +77,7 @@ for i,name in enumerate(files):
 # In[62]:
 
 
-with open(dir_array.format(24),'rb') as f:
+with open(dir_array.format(2),'rb') as f:
     test = pickle.load(f)
 
 

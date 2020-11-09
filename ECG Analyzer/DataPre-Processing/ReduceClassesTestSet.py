@@ -22,6 +22,7 @@ import numpy as np
 
 
 # Import the previously set aside test set for our patients
+# Test set is full of patients: 100, 105, 116, 215, 232
 
 with open('Test Data/Beat Locations.pkl', 'rb') as f:
     beat_locations = pickle.load(f)

@@ -160,7 +160,7 @@ for i in range(48):
         # Append the sample label to sample_labels
         sample_labels.append(Labels[j])
         CWTed = CWT(segments[j])
-        np.save(dir_segments_CWT.format('num_samps_total'),CWTed ,allow_pickle = True)
+        np.save(dir_segments_CWT.format(num_samps_total),CWTed ,allow_pickle = True)
         num_samps_total += 1
         if(num_samps_total % 100 == 0):
             print("Status: ")
@@ -171,7 +171,7 @@ for i in range(48):
     patient_samples.append(num_samps_total)
     # So I know where to start it again if it stops I will print this: 
     print('Number of samples for patient ',i,' is: ',num_samps_total)
-with open(dir_segmented_data.format('sample_labels'), 'wb') as f:
+with open(dir_segmented_data.format('1'), 'wb') as f:
         pickle.dump(sample_labels, f)
         
 with open(dir_segmented_data.format('patient_samples'), 'wb') as f:
