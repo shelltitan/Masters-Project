@@ -11,7 +11,7 @@ import keras
 import pickle
 from keras.models import Sequential
 import sys
-sys.path.append('P:/')
+sys.path.append('D:/')
 from Arrhythmia_generator import DataGenerator
 #from Arrhythmia_generator_aug_less_classes import DataGenerator_aug
 from sklearn.model_selection import train_test_split

@@ -171,7 +171,8 @@ for i in range(48):
     patient_samples.append(num_samps_total)
     # So I know where to start it again if it stops I will print this: 
     print('Number of samples for patient ',i,' is: ',num_samps_total)
-with open(dir_segmented_data.format('1'), 'wb') as f:
+#%%
+with open(dir_segmented_data.format('sample_labels'), 'wb') as f:
         pickle.dump(sample_labels, f)
         
 with open(dir_segmented_data.format('patient_samples'), 'wb') as f:

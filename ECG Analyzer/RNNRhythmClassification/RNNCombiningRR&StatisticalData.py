@@ -28,6 +28,7 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
 fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
+dir_RNN_10_location = 'D:/RNN_RR_Stats_10_Fold_Validation'
 
 # In[ ]:
 
@@ -194,13 +195,13 @@ for c,k in enumerate(index):
 
 
 # Save this data
-with open('Test Data/Rhythm Locations.pkl', 'wb') as f:
+with open(dir_test_data.format('Rhythm_Locations'), 'wb') as f:
     pickle.dump(test_rhythm_locations,f)
-with open('Test Data/Rhythm Labels.pkl', 'wb') as f:
+with open(dir_test_data.format('Rhythm_Labels'), 'wb') as f:
     pickle.dump(test_rhythm_labels,f)
-with open('Test Data/Beat Locations.pkl', 'wb') as f:
+with open(dir_test_data.format('Beat_Locations'), 'wb') as f:
     pickle.dump(test_beat_locations,f)
-with open('Test Data/Beat Labels.pkl', 'wb') as f:
+with open(dir_test_data.format('Beat_Labels'), 'wb') as f:
     pickle.dump(test_beat_labels,f)
 
 
@@ -621,7 +622,11 @@ import hrvanalysis
 from hrvanalysis.extract_features import get_time_domain_features,get_frequency_domain_features,get_geometrical_features, get_poincare_plot_features, get_sampen
 from scipy.stats import entropy
 
+RR_distances = np.array(RR_distances)
+
 RR_distances = RR_distances.reshape((RR_distances.shape[0], sample_size))
+
+#RR_distances = RR_distances.reshape(RR_distances.shape[0], sample_size) ORIGINAL
 
 # Find different statistical information about the RR time sequence evolution. These are in the form of time domains,
 # Frequency Domains as well as non-linear features
@@ -787,6 +792,7 @@ sample_entropy = normalize(sample_entropy)
 
 # Remove the windows which we could not use as they were less than 3 in length
 svm_x = np.delete(x, indexes_to_remove)
+print(indexes_to_remove)
 SVM_RR_distances = np.delete(RR_distances, indexes_to_remove)
 svm_y = np.delete(y, indexes_to_remove)
 
@@ -1022,7 +1028,7 @@ for train, val in k_fold.split(total_x, svm_y):
     data_split_val = proportions(val_y)
     total.append(data_split_val)
     
-    with open('RNN RR Stats 10 Fold Validation/Data Splits For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_10_location + '/Data_Splits_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(total,f)
     
     #train_x,train_y = fit_to_batch(train_x,train_y,batch_size)
@@ -1046,7 +1052,7 @@ for train, val in k_fold.split(total_x, svm_y):
     history = model.fit(train_x, train_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 50, shuffle = True)
     
     # Save history for each fold
-    with open('RNN RR Stats 10 Fold Validation/History For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_10_location + '/History_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(history,f)
     
     # Save the evaluate values for later
@@ -1082,14 +1088,14 @@ for train, val in k_fold.split(total_x, svm_y):
     #print(confusion)
     
     # Save the scikit parameters for this fold
-    with open('RNN RR Stats 10 Fold Validation/Scikit Scores For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_10_location + '/Scikit_Scores_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(scikit_scores,f)
     
     # Save the confusion matrix for this fold
-    with open('RNN RR Stats 10 Fold Validation/Confusion Matrix For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_10_location + '/Confusion_Matrix_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(confusion,f)
     
     i += 1
     
-np.save('RNN RR Stats 10 Fold Validation/Scores_Weighted.npy', scores, allow_pickle = True)
+np.save(dir_RNN_10_location + '/Scores_Weighted.npy', scores, allow_pickle = True)
 

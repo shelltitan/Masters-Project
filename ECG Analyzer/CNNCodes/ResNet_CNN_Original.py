@@ -11,7 +11,7 @@ import keras
 import pickle
 from keras.models import Sequential
 import sys
-sys.path.append('P:/')
+sys.path.append('D:/')
 from VGG_arrhythmia import DataGenerator
 from sklearn.model_selection import train_test_split
 from keras.layers import Dense, Dropout, Activation, Flatten

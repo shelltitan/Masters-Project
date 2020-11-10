@@ -7,9 +7,6 @@
 # This piece of code implements the full testing portion from CNN -> RNN -> output
 
 
-# In[2]:
-
-
 import numpy as np 
 import matplotlib.pyplot as plt
 import tensorflow as tf 

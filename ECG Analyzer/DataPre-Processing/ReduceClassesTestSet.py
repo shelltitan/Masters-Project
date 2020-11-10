@@ -17,21 +17,21 @@
 import pickle
 import numpy as np
 
+dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
 
 # In[ ]:
 
 
 # Import the previously set aside test set for our patients
 # Test set is full of patients: 100, 105, 116, 215, 232
-
-with open('Test Data/Beat Locations.pkl', 'rb') as f:
-    beat_locations = pickle.load(f)
-with open('Test Data/Beat Labels.pkl', 'rb') as f:
-    beat_labels = pickle.load(f)
-with open('Test Data/Rhythm Locations.pkl', 'rb') as f:
+with open(dir_test_data.format('Rhythm_Locations'), 'rb') as f:
     rhythm_locations = pickle.load(f)
-with open('Test Data/Rhythm Labels.pkl', 'rb') as f:
+with open(dir_test_data.format('Rhythm_Labels'), 'rb') as f:
     rhythm_labels = pickle.load(f)
+with open(dir_test_data.format('Beat_Locations'), 'rb') as f:
+    beat_locations = pickle.load(f)
+with open(dir_test_data.format('Beat_Labels'), 'rb') as f:
+    beat_labels = pickle.load(f)
 
 
 # In[ ]:
