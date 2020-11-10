@@ -2,3 +2,6 @@
 ECG Analyzer/DataPre-Processing/Test Aug.pkl
 *.h5
 *.pyc
+ECG Analyzer/DataPre-Processing/second_indices_remove.pkl
+ECG Analyzer/DataPre-Processing/first_indices_removed.pkl
+ECG Analyzer/DataPre-Processing/third_indices_remove.pkl
