@@ -20,6 +20,7 @@ from keras.models import Sequential
 from keras.layers import Bidirectional, LSTM, Dense, Dropout
 from skmultilearn.model_selection import IterativeStratification
 
+
 #%%
 #Directory varbiables
 dir_denoised_data = 'D:/arrhythmia-database/DenoisedData/{}_de-noised.pkl'
@@ -777,5 +778,5 @@ model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accurac
 history = model.fit(total_x, y, verbose = 1, batch_size = batch_size, epochs = 50, shuffle = True)
 
 # Save the completed model
-model.save('RNN Models/RNN Model.h5')
+model.save('D:/arrhythmia-database/RNN_Models/RNN_Model.h5')
 

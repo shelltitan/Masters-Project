@@ -24,7 +24,11 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
 fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
-
+dir_data_split = 'D:/arrhythmia-database/10-Fold_Validation/Data_Splits_For_Fold_{}_Weighted.pkl'
+dir_val_his = 'D:/arrhythmia-database/10-Fold_Validation/History_For_Fold {}_Weighted.pkl'
+dir_scikit_scores = 'D:/arrhythmia-database/10-Fold_Validation/Scikit_Scores_For_Fold {}_Weighted.pkl'
+dir_conf_mat = 'D:/arrhythmia-database/10-Fold_Validation/Confusion_Matrix_For_Fold_{}_Weighted.pkl'
+dir_scores = 'D:/arrhythmia-database/10-Fold_Validation/{}.npy'
 
 # In[ ]:
 
@@ -203,11 +207,11 @@ for c,k in enumerate(index):
 
 
 # Save test beat locations, rhythm labels and locations for later use
-with open('Test Data/Beat Locations.pkl', 'wb') as f:
+with open(dir_test_data.format('Beat_Locations'), 'wb') as f:
     pickle.dump(test_beat_locations,f)
-with open('Test Data/Rhythm Locations.pkl', 'wb') as f:
+with open(dir_test_data.format('Rhythm_Locations.pkl'), 'wb') as f:
     pickle.dump(test_rhythm_locations,f)
-with open('Test Data/Rhythm Labels.pkl', 'wb') as f:
+with open(dir_test_data.format('Rhythm_Labels'), 'wb') as f:
     pickle.dump(test_rhythm_labels,f)
 
 
@@ -770,7 +774,7 @@ for train, val in k_fold.split(x, y):
     data_split_val = proportions(val_y)
     total.append(data_split_val)
     
-    with open('10-Fold Validation/Data Splits For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_data_split.format(str(i)), 'wb') as f:
         pickle.dump(total,f)
     
     # Create the model
@@ -784,15 +788,15 @@ for train, val in k_fold.split(x, y):
     
     model.add(Dense(15, activation = 'sigmoid'))
 
-    model.compile(optimizer=optimizer, loss='binary_crossentropy',loss_weights = list(weights), metrics=['accuracy'])
+    model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
     
     # Fit to data
     
     history = model.fit(train_x, train_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 100, shuffle = True)
     
     # Save history for each fold
-    with open('10-Fold Validation/History For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
-        pickle.dump(history,f)
+    # with open(dir_val_his.format(str(i)), 'wb') as f:
+    #     pickle.dump(history,f)
     
     # Save the evaluate values for later
     print("Evaluation on Training set")
@@ -800,7 +804,7 @@ for train, val in k_fold.split(x, y):
     train_scores = model.evaluate(train_x, train_y, batch_size = batch_size)
     scores[i - 1][0] = train_scores[0]
     scores[i - 1][1] = train_scores[1]
-    #print(train_scores)
+    print(train_scores)
     
     print("Evaluation on Validation set")
     
@@ -826,16 +830,16 @@ for train, val in k_fold.split(x, y):
     #print(confusion)
     
     # Save the scikit parameters for this fold
-    with open('10-Fold Validation/Scikit Scores For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_scikit_scores.format(str(i)), 'wb') as f:
         pickle.dump(scikit_scores,f)
     
     # Save the confusion matrix for this fold
-    with open('10-Fold Validation/Confusion Matrix For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_conf_mat.format(str(i)), 'wb') as f:
         pickle.dump(confusion,f)
     
     i += 1
     
-np.save('10-Fold Validation/Scores_Weighted.npy', scores, allow_pickle = True)
+np.save(dir_scores.format('Scores_Weighted'), scores, allow_pickle = True)
 
 
 # In[ ]:
