@@ -18,6 +18,7 @@ import pickle
 import numpy as np
 
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
+dir_RNN_Models = 'D:/arrhythmia-database/RNN_Models/{}'
 
 # In[ ]:
 
@@ -406,12 +407,12 @@ for c,i in enumerate(total_y):
 
 # Save these indices and send them over to Teddy who can remove them from his CNN test set
 
-with open('first_indices_removed.pkl', 'wb') as f:
-    pickle.dump(indices_removed_1,f)
-with open('second_indices_remove.pkl', 'wb') as f:
-    pickle.dump(indices_removed_2,f)
-with open('third_indices_remove.pkl', 'wb') as f:
-    pickle.dump(windows_removed,f)
+# with open('first_indices_removed.pkl', 'wb') as f:
+#     pickle.dump(indices_removed_1,f)
+# with open('second_indices_remove.pkl', 'wb') as f:
+#     pickle.dump(indices_removed_2,f)
+# with open('third_indices_remove.pkl', 'wb') as f:
+#     pickle.dump(windows_removed,f)
 
 
 # In[ ]:
@@ -460,11 +461,11 @@ final_y = np.array(final_y)
 
 
 # Save this new modified test set ready to use
-with open('RNN Models/RNN_Test_x.pkl', 'wb') as f:
+with open(dir_RNN_Models.format('RNN_Test_x.pkl'), 'wb') as f:
     pickle.dump(final_x,f)
-with open('RNN Models/RNN_Test_y.pkl', 'wb') as f:
+with open(dir_RNN_Models.format('RNN_Test_y.pkl'), 'wb') as f:
     pickle.dump(final_y,f)
-with open('RNN Models/RNN_Test_Beat_Locations.pkl', 'wb') as f:
+with open(dir_RNN_Models.format('RNN_Test_Beat_Locations.pkl'), 'wb') as f:
     pickle.dump(final_beat_locations,f)
 
 

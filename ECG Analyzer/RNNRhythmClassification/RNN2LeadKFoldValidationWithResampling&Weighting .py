@@ -875,7 +875,7 @@ for train, val in k_fold.split(x, y):
     val_y = y[val]
     
     # Find new proportions and save them
-    total = []
+    total = [] 
     data_split_train = proportions(train_y)
     total.append(data_split_train)
     data_split_val = proportions(val_y)

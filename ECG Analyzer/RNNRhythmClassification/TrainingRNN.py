@@ -29,6 +29,7 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
 fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
+dir_RNN_Models = 'D:/arrhythmia-database/RNN_Models/{}'
 
 # In[ ]:
 
@@ -778,5 +779,5 @@ model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accurac
 history = model.fit(total_x, y, verbose = 1, batch_size = batch_size, epochs = 50, shuffle = True)
 
 # Save the completed model
-model.save('D:/arrhythmia-database/RNN_Models/RNN_Model.h5')
+model.save(dir_RNN_Models.format('RNN_Model.h5'))
 

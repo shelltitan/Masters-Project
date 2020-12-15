@@ -659,7 +659,7 @@ data_split = proportions(y)
 # In[ ]:
 
 
-#print(data_split)
+print(data_split)
 
 # This checks we have correct number of samples
 #print(data_split[15] + data_split[16])
@@ -845,6 +845,7 @@ np.save(dir_scores.format('Scores_Weighted'), scores, allow_pickle = True)
 # In[ ]:
 
 
-#mean = (scores[0][1] + scores[1][1] + scores[2][1]) / 3
-#print(confusion)
-
+mean = (scores[0][1] + scores[1][1] + scores[2][1]) / 3
+print(confusion)
+#%%
+print(scikit_scores)
