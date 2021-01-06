@@ -847,5 +847,20 @@ np.save(dir_scores.format('Scores_Weighted'), scores, allow_pickle = True)
 
 mean = (scores[0][1] + scores[1][1] + scores[2][1]) / 3
 print(confusion)
+
 #%%
-print(scikit_scores)
+for i in range(1, 11):
+    with open(dir_scikit_scores.format(i), 'rb') as f:
+        y = pickle.load(f)
+    print('f1 scores for split', i)    
+    print(y[4])
+    
+    with open(dir_conf_mat.format(i), 'rb') as f:
+        y = pickle.load(f)
+        print('confusion matrix for fold', i)
+        print(y[14])
+
+
+#%%
+s = np.load(dir_scores.format('Scores_Weighted'), allow_pickle = True)
+print(s)
