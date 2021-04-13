@@ -36,7 +36,7 @@ dir_scores = 'D:/arrhythmia-database/10-Fold_Validation/{}.npy'
 with open(dir_denoised_data.format(1), 'rb') as f:
     y = pickle.load(f)
 end = len(y)
-#print(end)
+print(end)
 
 # In[ ]:
 
@@ -105,9 +105,9 @@ for i in patient_id:
 # In[ ]:
 
 
-#print(len(rhythm_labels))
-#print(half_rhythm_labels[-1])
-#print(len(test_rhythm_labels))
+print(len(rhythm_labels))
+print(half_rhythm_labels[-1])
+print(len(test_rhythm_labels))
 
 
 # In[ ]:
@@ -239,7 +239,7 @@ for j in beat_labels:
 
 
 # Check
-#beat_locations[6][-1]
+beat_locations[6][-1]
 
 
 # In[ ]:
@@ -263,8 +263,8 @@ for j in beat_labels:
 
 
 # Check
-#print(len(full_list[0]))
-#print(full_list[0][-1])
+# print(len(full_list[0]))
+# print(full_list[0][-1])
 
 
 # In[ ]:
@@ -295,14 +295,14 @@ integer_samples = [[[0 if b == 'N'
 
 
 # Check
-#print(integer_samples[0][90])
+print(integer_samples[0][90])
 
 
 # In[ ]:
 
 
 # Check
-#print(full_list[2][-1])
+print(full_list[2][-1])
 
 
 # In[ ]:
@@ -327,7 +327,7 @@ for i in integer_samples:
 
 
 # Check
-#print(integer_samples[1][-1])
+print(integer_samples[1][-1])
 
 
 # In[ ]:
@@ -348,9 +348,9 @@ for j in beat_locations:
 # In[ ]:
 
 
-#print(rhythm_locations[-2])
-#print(location_list[-1][-1])
-#print(rhythm_labels[-1])
+# print(rhythm_locations[-2])
+# print(location_list[-1][-1])
+# print(rhythm_labels[-1])
 
 
 # In[ ]:
@@ -399,11 +399,11 @@ for i,patient in enumerate(rhythm_locations):
 # In[ ]:
 
 
-#print(sample_labels[-1])
-#print(len(beat_locations[8]))
-#print(beat_locations[8][90:110])
-#print(rhythm_locations[8])
-#print(rhythm_labels[8][:10])
+# print(sample_labels[-1])
+# print(len(beat_locations[8]))
+# print(beat_locations[8][90:110])
+# print(rhythm_locations[8])
+# print(rhythm_labels[8][:10])
 
 
 # In[ ]:
@@ -442,13 +442,13 @@ for c,i in enumerate(full_list_labels):
 # In[ ]:
 
 
-#print(x[-2][-1])
+# print(x[-2][-1])
 
 
 # In[ ]:
 
 
-#len(integer_samples[0])
+# print(len(integer_samples[0]))
 
 
 # In[ ]:
@@ -536,9 +536,9 @@ for c,patient in enumerate(complete_labels):
 
 # Have complete set of target labels and input arrays
 # Check
-#print(integer_samples[0])
-# Need to convert integer_samples to a 1 dimensional array of 10 sample windows
-#print(len(y))
+# print(integer_samples[0])
+# # Need to convert integer_samples to a 1 dimensional array of 10 sample windows
+# print(len(y))
 
 
 # In[ ]:
@@ -625,11 +625,11 @@ def proportions(labels):
         mix = False
         count = 0
         for index,number in enumerate(i):
-            #print(count)
-            #print(number)
+            # print(count)
+            # print(number)
             
-            #if ((number == 1) and (index == 0)):
-                #print(i)
+            # if ((number == 1) and (index == 0)):
+            #     print(i)
             
             if(number == 1):
                 count += 1
@@ -661,7 +661,7 @@ data_split = proportions(y)
 
 print(data_split)
 
-# This checks we have correct number of samples
+# # This checks we have correct number of samples
 #print(data_split[15] + data_split[16])
 
 
@@ -794,7 +794,7 @@ for train, val in k_fold.split(x, y):
     
     history = model.fit(train_x, train_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 100, shuffle = True)
     
-    # Save history for each fold
+    # Save history for each fold51
     # with open(dir_val_his.format(str(i)), 'wb') as f:
     #     pickle.dump(history,f)
     
@@ -849,16 +849,71 @@ mean = (scores[0][1] + scores[1][1] + scores[2][1]) / 3
 print(confusion)
 
 #%%
-for i in range(1, 11):
-    with open(dir_scikit_scores.format(i), 'rb') as f:
-        y = pickle.load(f)
-    print('f1 scores for split', i)    
-    print(y[4])
+for k in range(0,15):
+    prec_0=[]
+    recall_0=[]
+    f1_0=[]
+    for l in range(2, 11):
+        with open(dir_scikit_scores.format(l), 'rb') as f:
+            y = pickle.load(f)
+        prec_0.append(y[2][k])
+        recall_0.append(y[3][k])
+        f1_0.append(y[4][k])
+    if k == 0:
+        print('AF')
+    if k == 1:
+        print('AFIB')
+    if k == 2:
+        print('AFL')
+    if k == 3:
+        print('B')
+    if k == 4:
+        print('BII')
+    if k == 5:
+        print('IVR')
+    if k == 6:
+        print('N')
+    if k == 7:
+        print('NOD')
+    if k == 8:
+        print('P')
+    if k == 9:
+        print('PREX')
+    if k == 10:
+        print('SBR')
+    if k == 11:
+        print('SVTA')
+    if k == 12:
+        print('T')
+    if k == 13:
+        print('VFL')
+    if k == 14:
+        print('Unique labels')
     
+    print('avg precision, recall and f1')
+    prec=0
+    for i in range(0,9):
+        prec= prec+prec_0[i]
+    avgprec= prec/9
+    print(avgprec)
+    tempr=0
+    for i in range(0,9):
+        tempr= tempr+recall_0[i]
+    avgreca= tempr/9
+
+    print(avgreca)
+    tempf1=0
+    for i in range(0,9):
+        tempf1= tempf1+f1_0[i]
+    avgf1= tempf1/9
+    print(avgf1)
+
+#%%
+for i in range(2, 11):
     with open(dir_conf_mat.format(i), 'rb') as f:
         y = pickle.load(f)
         print('confusion matrix for fold', i)
-        print(y[14])
+        print(y)
 
 
 #%%

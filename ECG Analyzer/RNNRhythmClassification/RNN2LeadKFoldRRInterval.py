@@ -6,8 +6,7 @@
 
 # -------- Code Outline -------- #
 # Create a model that implements an RNN using output predictions from a CNN in order to identify rhythm changes
-# In this code we implement an over and under sampling scheme to try and improve validation accuracies as well as
-# A weighted binary crossentropy function.
+# We implement a stratified 10 k fold validation scheme to analyse how well the model will perform on real data
 
 
 # In[ ]:
@@ -25,16 +24,18 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
 fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
-
-
+dir_data_split = 'D:/arrhythmia-database/RNN_RR_10_Fold_Validation/Data_Splits_For_Fold_{}_Weighted.pkl'
+dir_val_his = 'D:/arrhythmia-database/RNN_RR_10_Fold_Validation/History_For_Fold {}_Weighted.pkl'
+dir_scikit_scores = 'D:/arrhythmia-database/RNN_RR_10_Fold_Validation/Scikit_Scores_For_Fold {}_Weighted.pkl'
+dir_conf_mat = 'D:/arrhythmia-database/RNN_RR_10_Fold_Validation/Confusion_Matrix_For_Fold_{}_Weighted.pkl'
+dir_scores = 'D:/arrhythmia-database/RNN_RR_10_Fold_Validation/{}.npy'
 # In[ ]:
 
 
 with open(dir_denoised_data.format(1), 'rb') as f:
     y = pickle.load(f)
 end = len(y)
-#print(end)
-
+print(end)
 
 # In[ ]:
 
@@ -81,8 +82,8 @@ for i in patient_id:
     # Rhythm label locations for patient i
     with open(fin_dir_rhythm_locations.format(i), 'rb') as f:
         temp_rhythm_location = pickle.load(f)
-         
-    # Separate the test and training sets
+        
+    # Split up into test and training
     if(i in full_test):
         test_rhythm_locations.append(temp_rhythm_location)
         test_beat_labels.append(temp_beat)
@@ -103,9 +104,15 @@ for i in patient_id:
 # In[ ]:
 
 
-#print(len(rhythm_labels))
-#print(half_rhythm_labels[-1])
-#print(len(test_rhythm_labels))
+print(len(rhythm_labels))
+print(half_rhythm_labels[-1])
+print(len(test_rhythm_labels))
+
+
+# In[ ]:
+
+
+#print(len(beat_labels[32]))
 
 
 # In[ ]:
@@ -122,8 +129,7 @@ for j in half_beat_locations:
 # In[ ]:
 
 
-# Function to find the rhythm location closest to a certain beat location
-
+# Find the closest rhythm location to the beat
 def find_beat_to_rhythm(beat_location, rhythm_location):
     index, value = min(enumerate(rhythm_location), key=lambda x: abs(x[1]-(beat_location)))
     return index, value
@@ -180,12 +186,32 @@ for c,k in enumerate(index):
 # In[ ]:
 
 
-#print(len(rhythm_locations))
-#print(len(test_rhythm_locations))
-#print(test_rhythm_labels[2])
-#print(test_rhythm_locations[2])
-#print(rhythm_locations[-1])
-#print(rhythm_labels[-1])
+#print(half_beat_locations[0][index[0]])
+
+
+# In[ ]:
+
+
+#print(half_beat_locations[0])
+#print(half_beat_labels[0])
+
+
+# In[ ]:
+
+
+#print(test_beat_locations[3])
+
+
+# In[ ]:
+
+
+# Save test beat locations, rhythm labels and locations for later use
+with open(dir_test_data.format('Beat_Locations'), 'wb') as f:
+    pickle.dump(test_beat_locations,f)
+with open(dir_test_data.format('Rhythm_Locations.pkl'), 'wb') as f:
+    pickle.dump(test_rhythm_locations,f)
+with open(dir_test_data.format('Rhythm_Labels'), 'wb') as f:
+    pickle.dump(test_rhythm_labels,f)
 
 
 # In[ ]:
@@ -212,7 +238,7 @@ for j in beat_labels:
 
 
 # Check
-#beat_locations[6][-1]
+beat_locations[6][-1]
 
 
 # In[ ]:
@@ -236,8 +262,8 @@ for j in beat_labels:
 
 
 # Check
-#print(len(full_list[0]))
-#print(full_list[0][-1])
+# print(len(full_list[0]))
+# print(full_list[0][-1])
 
 
 # In[ ]:
@@ -268,14 +294,14 @@ integer_samples = [[[0 if b == 'N'
 
 
 # Check
-#print(integer_samples[0][90])
+print(integer_samples[0][90])
 
 
 # In[ ]:
 
 
 # Check
-#print(full_list[2][-1])
+print(full_list[2][-1])
 
 
 # In[ ]:
@@ -300,7 +326,7 @@ for i in integer_samples:
 
 
 # Check
-#print(integer_samples[1][-1])
+print(integer_samples[1][-1])
 
 
 # In[ ]:
@@ -321,9 +347,9 @@ for j in beat_locations:
 # In[ ]:
 
 
-#print(rhythm_locations[-2])
-#print(location_list[-1][-1])
-#print(rhythm_labels[-1])
+# print(rhythm_locations[-2])
+# print(location_list[-1][-1])
+# print(rhythm_labels[-1])
 
 
 # In[ ]:
@@ -342,7 +368,7 @@ sample_labels = []
 # First pick a patient
 for i,patient in enumerate(rhythm_locations):
     
-    print(i)
+    #print(i)
     
     patient_beat_labels = []
     
@@ -372,11 +398,11 @@ for i,patient in enumerate(rhythm_locations):
 # In[ ]:
 
 
-#print(sample_labels[-1])
-#print(len(beat_locations[8]))
-#print(beat_locations[8][90:110])
-#print(rhythm_locations[8])
-#print(rhythm_labels[8][:10])
+# print(sample_labels[-1])
+# print(len(beat_locations[8]))
+# print(beat_locations[8][90:110])
+# print(rhythm_locations[8])
+# print(rhythm_labels[8][:10])
 
 
 # In[ ]:
@@ -396,7 +422,7 @@ for j in sample_labels:
 x = []
 # Per patient
 for c,i in enumerate(full_list_labels):
-    print(c)
+    #print(c)
     patient = []
     # Each sample
     for j in i:
@@ -415,13 +441,13 @@ for c,i in enumerate(full_list_labels):
 # In[ ]:
 
 
-#print(x[-2][-1])
+# print(x[-2][-1])
 
 
 # In[ ]:
 
 
-#len(integer_samples[0])
+# print(len(integer_samples[0]))
 
 
 # In[ ]:
@@ -462,6 +488,8 @@ def create_complete_label(sample_labels):
 
 # In[ ]:
 
+
+# Create multilabel vector for each window
 
 complete_labels = []
 for i in x:
@@ -507,14 +535,15 @@ for c,patient in enumerate(complete_labels):
 
 # Have complete set of target labels and input arrays
 # Check
-#print(integer_samples[0])
-# Need to convert integer_samples to a 1 dimensional array of 10 sample windows
-#print(len(y))
+# print(integer_samples[0])
+# # Need to convert integer_samples to a 1 dimensional array of 10 sample windows
+# print(len(y))
 
 
 # In[ ]:
 
 
+# Flatten input array into just 10 window rhythms
 x = []
 for i in integer_samples:
     for j in i:
@@ -544,7 +573,70 @@ x = x.reshape(len(y), sample_size,1)
 
 
 #x[400]
+#%%
 
+# -------- SECTION FOR RR INTERVAL ADDITION -------- #
+# See what effect adding RR interval lengths will do if we use it as a second feature.
+# Each peak will take a value for its RR length to then next peak, except the last one which will just
+# Be set to 0
+
+# First split each patients beats into chunks of sample size
+patient_sizes = []
+new_locations = []
+for k in range(len(beat_locations)):
+    
+    patient_sizes.append(len(beat_locations[k]) / sample_size)
+    
+    new_locations.append([beat_locations[k][i:i + sample_size] for i in range(0, len(beat_locations[k]), sample_size)])
+
+
+# In[ ]:
+
+
+# Now find the distance between all the R peaks within that window and set the very final one to 0 so it is same length
+def distance(point1, point2):
+    return(abs(point1 - point2))
+
+RR_distances = []
+for patient in new_locations:
+    patient_RR = []
+    for c,sample in enumerate(patient):
+        temp = []
+        
+        if (c != len(patient) - 1):
+            for i in range(0, sample_size, 1):
+                if(i == sample_size - 1):
+                    temp += [0]
+                else:    
+                    temp += [distance(sample[i],sample[i+1])]
+        
+        # Last set for patient will not be a complete set of sample size so work out what is in there to do then pad with 0's
+        else:
+        
+            number_peaks = len(sample)
+            
+            number_to_pad = sample_size - number_peaks
+            
+            for i in range(0, number_peaks, 1):
+                if(i == number_peaks - 1):
+                    temp += [0]
+                else:
+                    temp += [distance(sample[i],sample[i+1])]
+                    
+            for j in range(number_to_pad):
+                temp += [0]
+        
+        patient_RR.append(temp)
+    RR_distances += patient_RR
+
+
+# In[ ]:
+
+
+RR_distances = np.array(RR_distances).reshape((x.shape))
+
+
+total_x = np.concatenate((x,RR_distances), axis = 2)
 
 # In[ ]:
 
@@ -595,11 +687,11 @@ def proportions(labels):
         mix = False
         count = 0
         for index,number in enumerate(i):
-            #print(count)
-            #print(number)
+            # print(count)
+            # print(number)
             
-            #if ((number == 1) and (index == 0)):
-                #print(i)
+            # if ((number == 1) and (index == 0)):
+            #     print(i)
             
             if(number == 1):
                 count += 1
@@ -623,15 +715,15 @@ def proportions(labels):
 # In[ ]:
 
 
-data_split = proportions(y)
+# data_split = proportions(y)
 
 
 # In[ ]:
 
 
-#print(data_split)
+# print(data_split)
 
-# This checks we have correct number of samples
+# # This checks we have correct number of samples
 #print(data_split[15] + data_split[16])
 
 
@@ -639,10 +731,10 @@ data_split = proportions(y)
 
 
 # Save the training data and training labels
-#with open('RNN Training Data.pkl', 'wb') as f:
- #   pickle.dump(x, f)
-#with open('RNN Training Targets.pkl', 'wb') as f:
- #   pickle.dump(y, f)
+with open('RNN Training Data.pkl', 'wb') as f:
+    pickle.dump(x, f)
+with open('RNN Training Targets.pkl', 'wb') as f:
+    pickle.dump(y, f)
 
 
 # In[ ]:
@@ -670,11 +762,11 @@ from skmultilearn.model_selection import IterativeStratification
 # Longer computationally. Thankfully the RNN is very fast as we are just using sequences so a 10-fold validation
 # Will be sufficient and leaves 90% of the data for training purposes
 
-n_split = 1
+n_split = 10
  
 k_fold = IterativeStratification(n_splits = n_split, order=1)
 
-i = 10
+i = 1
 
 # This is just to check that splits are somewhat correct and then crucially saves the data set splits for each fold
 # Into a file for analysis later
@@ -683,7 +775,7 @@ i = 10
 train_indices = []
 val_indices = []
 
-for train, val in k_fold.split(x, y):
+for train, val in k_fold.split(total_x, y):
     print("Fold" + str(i))
     temp_1 = proportions(y[train])
     temp_2 = proportions(y[val])
@@ -699,136 +791,11 @@ for train, val in k_fold.split(x, y):
 # In[ ]:
 
 
-#print(x.shape)
-#print(y[0])
-
-
-# In[ ]:
-
-
-# This function allows us to downsample certain labels in this case normal beats
-
-def downsample(x,y,N,proportions):
-    
-    # Take out however many samples from normal beats
-    x = list(x)
-    y = list(y)
-
-    for i in range(N):
-        
-        for c,item in enumerate(y):
-            
-            if(item[6] == 1):
-                del y[c]
-                del x[c]
-                break;
-        
-    
-    return np.array(x), np.array(y)
-
-
-# In[ ]:
-
-
-# Function that downsamples and upsamples via copying
-
-def sampler(x,y,N, proportions):
-
-    # Now they are split into training and validation sets, we need to keep the validation set as it is but
-    # Adjust the training set via resampling to get an even distribution of all the types of rhythms. There will be
-    # An optimal amount to do this, a little will increase accuracy but too much and we will overfit severely therefore
-    # Need to test a lot of different variations
-
-    # Looking at the proportions of the labels the lowest amount in any one class is 4 rhythms so first option to try is a sample
-    # Space where each corresponding rhythm only has ~ 5 samples in each, I do not imagine this will work well due to the low
-    # Number so it will not see all the different beat combinations for that type. It does however give us a base performance
-
-    # Easiest way to do this is to likely go through and pick randomly N from each label type ie [1,0,0...] or [0,1,0,...]
-    # And ignore the fact that some can be multilabel, this way we will get a split of multilabel or not and we will get slightly
-    # more types than others but not by big factors
-
-    sampled_x = []
-    sampled_y = []
-
-    # Loop over x and select 5 of each type giving 75 in total
-
-    for i in range(15):
-        
-        if(proportions(y)[i] < N):
-            # Check how many times we need to loop over the set to do copies
-            # This tells us per one we find in x, how many copies do we need to make of it
-            loops_to_copy = int(np.ceil(N/proportions(y)[i]))
-        else:
-            # Dont need to make a copy so just run through once
-            loops_to_copy = 1
-        
-        count = 0
-        for c,j in enumerate(y):
-
-            if(count == N):
-                #reset the count
-                count = 0
-                break
-
-            if(j[i] == 1):
-                
-                # If we need to make copies then do them here
-                for copy in range(loops_to_copy):
-                    sampled_y.append(j)
-                    sampled_x.append(x[i])
-                    count += 1
-                
-    return np.array(sampled_x), np.array(sampled_y)
-
-
-# In[ ]:
-
-
-#print(sampled_y[:2])
-#print(sampled_x[:2])
-#print(proportions(sampled_y))
-
-
-# In[ ]:
-
-
-# Now save the indices for GPU use on server
-#with open('RNN Training Indices.pkl', 'wb') as f:
- #   pickle.dump(train_indices, f)
-#with open('RNN Validation Indices.pkl', 'wb') as f:
- #   pickle.dump(val_indices, f)
-
-
-# In[ ]:
-
-
-# Implement a weighted loss that will account for the multilabel data being imbalanced
-# First find the appropriate weighting we need to give to each class
-def calculating_class_weights(y_true):
-    from sklearn.utils.class_weight import compute_class_weight
-    number_dim = np.shape(y_true)[1]
-    weights = np.empty([number_dim, 2])
-    for i in range(number_dim):
-        weights[i] = compute_class_weight('balanced', [0.,1.], y_true[:, i])
-    return weights
-
-
-# In[ ]:
-
-
-class_weights = calculating_class_weights(y)
-
-
-# In[ ]:
-
-
-# Implement a loss function that uses these new weights
-
-import keras.backend as K
-def get_weighted_loss(weights):
-    def weighted_loss(y_true, y_pred):
-        return K.mean((weights[:,0]**(1-y_true))*(weights[:,1]**(y_true))*K.binary_crossentropy(y_true, y_pred), axis=-1)
-    return weighted_loss
+# Now save the indices for GPU use on server as we cannot download the multilearn on there
+# with open('RNN Training Indices.pkl', 'wb') as f:
+#     pickle.dump(train_indices, f)
+# with open('RNN Validation Indices.pkl', 'wb') as f:
+#     pickle.dump(val_indices, f)
 
 
 # In[ ]:
@@ -843,7 +810,6 @@ def get_weighted_loss(weights):
 from keras.models import Sequential
 from keras.layers import Bidirectional, LSTM, Dense, Dropout
 from sklearn.metrics import f1_score, precision_score, recall_score, multilabel_confusion_matrix, hamming_loss, jaccard_score
-from tensorflow.nn import sigmoid_cross_entropy_with_logits
 
 i = 1
 
@@ -854,38 +820,24 @@ from keras import optimizers
 
 optimizer = keras.optimizers.Adam(learning_rate=0.001, beta_1=0.9, beta_2=0.999, amsgrad=False)
 
-for train, val in k_fold.split(x, y):
+for train, val in k_fold.split(total_x, y):
     
     print("Fold " + str(i))
     
-    train_x = x[train]
+    train_x = total_x[train]
     train_y = y[train]
-    
-    # Choose which resampling technique to use
-    sampled_x,sampled_y = downsample(train_x, train_y, 6000, proportions)
-    
-    sampled_x, sampled_y = sampler(train_x, train_y, 500, proportions)
-    
-    print(sampled_x.shape)
-    print(sampled_y.shape)
-    
-    class_weights = calculating_class_weights(sampled_y)
-    
-    val_x = x[val]
+    val_x = total_x[val]
     val_y = y[val]
     
     # Find new proportions and save them
-    total = [] 
+    total = []
     data_split_train = proportions(train_y)
     total.append(data_split_train)
     data_split_val = proportions(val_y)
     total.append(data_split_val)
     
-   # with open('10-Fold Validation/Data Splits For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
-    #    pickle.dump(total,f)
-    
-    #train_x,train_y = fit_to_batch(train_x,train_y,batch_size)
-    #val_x, val_y = fit_to_batch(val_x,val_y,batch_size)
+    with open(dir_data_split.format(str(i)), 'wb') as f:
+        pickle.dump(total,f)
     
     # Create the model
     model = Sequential()
@@ -893,21 +845,20 @@ for train, val in k_fold.split(x, y):
                             stateful = False,
                             recurrent_dropout = 0.2,
                             activation = 'sigmoid'),
-                            input_shape = (sample_size,1)))
+                            input_shape = (sample_size,2)))
     
     
     model.add(Dense(15, activation = 'sigmoid'))
-    
-    # Can change the loss here if we want to try weighted loss function
+
     model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
     
     # Fit to data
     
-    history = model.fit(sampled_x, sampled_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 50, shuffle = True)
+    history = model.fit(train_x, train_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 100, shuffle = True)
     
     # Save history for each fold
-   # with open('10-Fold Validation/History For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
-      #  pickle.dump(history,f)
+    # with open(dir_val_his.format(str(i)), 'wb') as f:
+    #     pickle.dump(history,f)
     
     # Save the evaluate values for later
     print("Evaluation on Training set")
@@ -936,27 +887,97 @@ for train, val in k_fold.split(x, y):
     scikit_scores.append(f1_score(val_y, predictions, average = None))
     confusion = multilabel_confusion_matrix(val_y, predictions)
     print(confusion)
-    # print(val_scores)
-    print(scikit_scores)
+    #print(val_scores)
+    #print(scikit_scores)
     #print(confusion)
     
     # Save the scikit parameters for this fold
-   # with open('10-Fold Validation/Scikit Scores For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
-     #   pickle.dump(scikit_scores,f)
+    with open(dir_scikit_scores.format(str(i)), 'wb') as f:
+        pickle.dump(scikit_scores,f)
     
     # Save the confusion matrix for this fold
-    #with open('Resampling Tests/Confusion Matrix For Fold {}_Sampled_20_Weighted.pkl'.format(str(i)), 'wb') as f:
-     #   pickle.dump(confusion,f)
+    with open(dir_conf_mat.format(str(i)), 'wb') as f:
+        pickle.dump(confusion,f)
     
     i += 1
     
-#np.save('10-Fold Validation/Scores_Weighted.npy', scores, allow_pickle = True)
+np.save(dir_scores.format('Scores_Weighted'), scores, allow_pickle = True)
+
+
+# In[ ]:
+
+
+mean = (scores[0][1] + scores[1][1] + scores[2][1]) / 3
+print(confusion)
+
 #%%
-for i in (1,11):
+for k in range(0,15):
+    prec_0=[]
+    recall_0=[]
+    f1_0=[]
+    for l in range(2, 11):
+        with open(dir_scikit_scores.format(l), 'rb') as f:
+            y = pickle.load(f)
+        prec_0.append(y[2][k])
+        recall_0.append(y[3][k])
+        f1_0.append(y[4][k])
+    if k == 0:
+        print('AF')
+    if k == 1:
+        print('AFIB')
+    if k == 2:
+        print('AFL')
+    if k == 3:
+        print('B')
+    if k == 4:
+        print('BII')
+    if k == 5:
+        print('IVR')
+    if k == 6:
+        print('N')
+    if k == 7:
+        print('NOD')
+    if k == 8:
+        print('P')
+    if k == 9:
+        print('PREX')
+    if k == 10:
+        print('SBR')
+    if k == 11:
+        print('SVTA')
+    if k == 12:
+        print('T')
+    if k == 13:
+        print('VFL')
+    if k == 14:
+        print('Unique labels')
     
-    with open('10-Fold Validation/Scikit Scores For Fold {}_Weighted.pkl'.format(str(i)), 'wb') as f:
-        scores = pickle.load(scikit_scores,f)
-        print(scores)
-    with open('Resampling Tests/Confusion Matrix For Fold {}_Sampled_20_Weighted.pkl'.format(str(i)), 'wb') as f:
-        con= pickle.load(confusion,f)
-        print(con)
+    print('avg precision, recall and f1')
+    prec=0
+    for i in range(0,9):
+        prec= prec+prec_0[i]
+    avgprec= prec/9
+    print(avgprec)
+    tempr=0
+    for i in range(0,9):
+        tempr= tempr+recall_0[i]
+    avgreca= tempr/9
+
+    print(avgreca)
+    tempf1=0
+    for i in range(0,9):
+        tempf1= tempf1+f1_0[i]
+    avgf1= tempf1/9
+    print(avgf1)
+
+#%%
+for i in range(2, 11):
+    with open(dir_conf_mat.format(i), 'rb') as f:
+        y = pickle.load(f)
+        print('confusion matrix for fold', i)
+        print(y)
+
+
+#%%
+s = np.load(dir_scores.format('Scores_Weighted'), allow_pickle = True)
+print(s)

@@ -95,7 +95,7 @@ plt.figure(1)
 plt.plot(new_data[:1000,0])
 plt.figure(2)
 plt.plot(test[0:1000,0])
-#plt.plot(test[:200,0])
+# plt.plot(test[:200,0])
 
 
 # In[ ]:

@@ -15,11 +15,12 @@
 import numpy as np
 import pickle
 import keras
+from keras import backend as K
 from sklearn.metrics import f1_score, precision_score, recall_score, multilabel_confusion_matrix, hamming_loss, jaccard_score
 from keras.models import Sequential
 from keras.layers import Bidirectional, LSTM, Dense, Dropout
 from skmultilearn.model_selection import IterativeStratification
-
+import matplotlib.pyplot as plt
 
 #%%
 #Directory varbiables
@@ -184,12 +185,12 @@ for c,k in enumerate(index):
 # In[ ]:
 
 
-#print(len(rhythm_locations))
-#print(len(test_rhythm_locations))
-#print(test_rhythm_labels[2])
-#print(test_rhythm_locations[2])
-#print(rhythm_locations[-1])
-#print(rhythm_labels[-1])
+# print(len(rhythm_locations))
+# print(len(test_rhythm_locations))
+# print(test_rhythm_labels[2])
+# print(test_rhythm_locations[2])
+# print(rhythm_locations[-1])
+# print(rhythm_labels[-1])
 
 
 # In[ ]:
@@ -752,8 +753,23 @@ batch_size = 28
  #   pickle.dump(train_indices, f)
 #with open('RNN Validation Indices.pkl', 'wb') as f:
  #   pickle.dump(val_indices, f)
+#%%
+def recall_m(y, x):
+    true_positives = K.sum(K.round(K.clip(y * x, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
 
+def precision_m(y, x):
+    true_positives = K.sum(K.round(K.clip(y * x, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(x, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
 
+def f1_m(y, x):
+    precision = precision_m(y, x)
+    recall = recall_m(y, x)
+    return 2*((precision*recall)/(precision+recall+K.epsilon()))
 # In[ ]:
 
 
@@ -768,11 +784,10 @@ model.add(Bidirectional(LSTM(units = 256,
                             recurrent_dropout = 0.2,
                             activation = 'sigmoid'),
                             input_shape = (sample_size,2)))
-    
-    
+
 model.add(Dense(15, activation = 'sigmoid'))
 
-model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy',keras.metrics.Precision(),recall_m,f1_m,])
     
 # Fit to ALL the data
     
@@ -781,3 +796,6 @@ history = model.fit(total_x, y, verbose = 1, batch_size = batch_size, epochs = 5
 # Save the completed model
 model.save(dir_RNN_Models.format('RNN_Model.h5'))
 
+#%%
+matrix = multilabel_confusion_matrix(y.argmax(axis=1), x.argmax(axis=1))
+print(matrix)

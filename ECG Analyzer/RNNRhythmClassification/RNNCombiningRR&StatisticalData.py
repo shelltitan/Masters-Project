@@ -28,7 +28,7 @@ fin_dir_beat_labels = 'D:/arrhythmia-database/RawDataFinal/BeatLabels/{}_beat_la
 fin_dir_rhythm_labels = 'D:/arrhythmia-database/RawDataFinal/RhythmLabels/{}_rhythm_labels.pkl'
 fin_dir_rhythm_locations = 'D:/arrhythmia-database/RawDataFinal/RhythmLocations/{}_rhythm_locations.pkl'
 dir_test_data = 'D:/arrhythmia-database/TestData/{}.pkl'
-dir_RNN_10_location = 'D:/RNN_RR_Stats_10_Fold_Validation'
+dir_RNN_Stats_val = 'D:/arrhythmia-database/RNN_RR_Stats_10_Fold_Validation'
 
 # In[ ]:
 
@@ -1028,7 +1028,7 @@ for train, val in k_fold.split(total_x, svm_y):
     data_split_val = proportions(val_y)
     total.append(data_split_val)
     
-    with open(dir_RNN_10_location + '/Data_Splits_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_Stats_val + '/Data_Splits_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(total,f)
     
     #train_x,train_y = fit_to_batch(train_x,train_y,batch_size)
@@ -1052,7 +1052,7 @@ for train, val in k_fold.split(total_x, svm_y):
     history = model.fit(train_x, train_y, verbose = 1, batch_size = batch_size, validation_data = (val_x, val_y), epochs = 50, shuffle = True)
     
     # Save history for each fold
-    with open(dir_RNN_10_location + '/History_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_Stats_val + '/History_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(history,f)
     
     # Save the evaluate values for later
@@ -1088,14 +1088,14 @@ for train, val in k_fold.split(total_x, svm_y):
     #print(confusion)
     
     # Save the scikit parameters for this fold
-    with open(dir_RNN_10_location + '/Scikit_Scores_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_Stats_val + '/Scikit_Scores_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(scikit_scores,f)
     
     # Save the confusion matrix for this fold
-    with open(dir_RNN_10_location + '/Confusion_Matrix_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
+    with open(dir_RNN_Stats_val + '/Confusion_Matrix_For_Fold_{}_Weighted.pkl'.format(str(i)), 'wb') as f:
         pickle.dump(confusion,f)
     
     i += 1
     
-np.save(dir_RNN_10_location + '/Scores_Weighted.npy', scores, allow_pickle = True)
+np.save(dir_RNN_Stats_val + '/Scores_Weighted.npy', scores, allow_pickle = True)
 
